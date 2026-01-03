@@ -1,0 +1,63 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.app-container {
+    background-image: url('/stm-logo.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+}
+
+.header {
+    padding: 1rem;
+    text-align: center;
+    font-size: 5rem;
+    color: #ef6060;
+    text-shadow:
+        0 0 5px #2b0101,
+        0 0 10px #920d0d,
+        0 0 20px #ec0b0b,
+        0 0 40px #ff0a0a,
+        0 0 60px #ff0000;
+}
+
+@font-face {
+    font-family: 'Stranger Things';
+    src: url('/fonts/stranger-things.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Stranger Things Outlined';
+    src: url('/fonts/stranger-things-outlined.ttf') format('truetype');
+}
+
+.solid {
+    font-family: 'Stranger Things', sans-serif;
+}
+
+.outlined {
+    font-family: 'Stranger Things Outlined', sans-serif;
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+    .app-container {
+        background-image: url('/stm-logo-mobile.png');
+    }
+    .header {
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 375px) {
+    .header {
+        font-size: 2rem;
+    }
+}
