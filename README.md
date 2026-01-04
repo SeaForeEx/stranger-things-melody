@@ -17,7 +17,7 @@ Recreate the iconic Stranger Things theme melody note-by-note with this interact
 2. [Prerequisites](#prerequisites)
 3. [Project Setup](#project-setup)
 4. [Design Decisions](#design-decisions)
-5. [Initial Audio Testing](#initial-audio-testing)
+5. [Play One Note](#play-one-note)
 6. [Multiple Notes](#multiple-notes)
 7. [Keyboard Functionality](#keyboard-functionality)
 8. [Rolling Keys](#rolling-keys)
@@ -106,13 +106,96 @@ When designing the mobile view, I realized the desktop background didn't transla
 
 ---
 
-## Initial Audio Testing
+## Play One Note
 
+Before I could create a set of notes to play the Stranger Things melody, I decided that I needed to test Web Audio API by playing one note from its built-in oscillator. I chose the C4 note as that would be the first note in the melody.
 
+Here's the code:
+
+```vue
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+
+const audioContext = ref<AudioContext | null>(null)
+
+onMounted(() => {
+    audioContext.value = new AudioContext()
+})
+
+function playNote() {
+    if (!audioContext.value) return
+
+    const oscillator = audioContext.value.createOscillator()
+    const gainNode = audioContext.value.createGain()
+
+    oscillator.connect(gainNode)
+    gainNode.connect(audioContext.value.destination)
+
+    oscillator.frequency.value = 261.63
+    oscillator.type = 'sine'
+    gainNode.gain.value = 0.3
+
+    const now = audioContext.value.currentTime
+    oscillator.start(now)
+    oscillator.stop(now + 0.5)
+}
+</script>
+
+<template>
+    <div class="app-container">
+        <div class="outlined header">Welcome to HawkinS</div>
+        <button @click="playNote">Play C Note</button>
+    </div>
+</template>
+
+<style scoped></style>
+```
+
+Every `.vue` file is a Single File Component combining HTML, TypeScript, and CSS in one place. While Vue supports scoped styles within each component, I opted for a separate global CSS file linked in `index.html`. I prefer external stylesheets and find that internal CSS clutters the file too much. For a more complex app, I'd likely use scoped CSS per component alongside a global stylesheet for shared styles.
+
+Let's break this code down:
+
+```vue
+import { ref, onMounted } from 'vue'
+
+const audioContext = ref<AudioContext | null>(null)
+
+onMounted(() => {
+    audioContext.value = new AudioContext()
+})
+```
+
+`ref` is a built-in Vue function that declares reactive state when using the Composition API. Similar to React's `useState` hook, the `ref` below creates the `audioContext` state variable, but without separate getter and setter functions. Vue allows direct mutation of the state through `.value`, and tracks those changes automatically for reactivity.
+
+`onMounted` is a lifecycle hook that executes after the Vue component is mounted on the DOM. Here, it initializes the `audioContext` reactive variable from `null` to a new `AudioContext` instance, giving us access to the Web Audio API for creating oscillators and controlling audio playback.
+
+Now let's break down the `playSound()` function:
+
+```vue
+if (!audioContext.value) return
+```
+
+This safety check exits the function immediately if `audioContext` is still null (hasn't been initialized yet).
+
+```vue
+const oscillator = audioContext.value.createOscillator()
+const gainNode = audioContext.value.createGain()
+```
+
+These lines create an oscillator node (sound generator) and a gain node (volume controller).
+
+```vue
+oscillator.connect(gainNode)
+gainNode.connect(audioContext.value.destination)
+```
+
+These lines create a basic audio routing chain so the user can hear the sound. The oscillator connects to the gain node for volume control, and the gain node connects to the device's speakers or headphones (the `destination`).
 
 ---
 
 ## Multiple Notes
+
+
 
 ---
 
