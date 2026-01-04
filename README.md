@@ -1,4 +1,4 @@
-<img src="screenshots/stm-logo-cropped.png" alt="Stranger Things Melody" width="35%" />
+<img src="screenshots/stm-logo-cropped.png" alt="Stranger Things Melody" width="50%" />
 
 Recreate the iconic Stranger Things theme melody note-by-note with this interactive Vue.js application powered by Web Audio API.
 
@@ -86,9 +86,29 @@ Open your browser to `http://localhost:5173/`
 
 ## Design Decisions
 
+One thing I've learned about my process is that I prefer making the site visually appealing before diving into functionality. For some reason, working on code becomes easier when I genuinely like what I'm looking at.
+
+### Desktop View
+
+<img src="screenshots/stm-desktop.png" alt="STM Desktop View" width="75%" />
+
+I downloaded a free Stranger Things-style font from [FontGet](https://www.fontget.com/font/stranger-things-1/). It included an outlined version that I used in the "Welcome to Hawkins" header.
+
+Then I generated the Stranger Things Melody background using the Pixel Frame [Stranger Things Font Generator](https://pixelframe.design/stranger-things/).
+
+Finally, I created five buttons representing the five notes in the basic Stranger Things melody, with each note labeled on its button. I considered simulating an actual keyboard layout, but chose individual buttons to create a more intuitive experience for users who have never played piano before.
+
+### Mobile View
+
+<img src="screenshots/stm-mobile.png" alt="STM Mobile View" width="50%" />
+
+When designing the mobile view, I realized the desktop background didn't translate well to taller screens. I considered creating a different background entirely, but then it hit me: I could stack the background vertically with the bottom half flipped upside down—mirroring the Upside Down from Stranger Things. It solved the problem creatively and stayed true to the theme. Everyone wins!
+
 ---
 
 ## Initial Audio Testing
+
+
 
 ---
 
