@@ -13,7 +13,7 @@ Recreate the iconic Stranger Things theme melody note-by-note with this interact
 [![Web Audio API](https://img.shields.io/badge/Web_Audio_API-FF6B35?style=flat&logo=audiomack&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
 
 ## Table of Contents
-1. [Learning Goald](#learning-goals)
+1. [Learning Goals](#learning-goals)
 2. [Prerequisites](#prerequisites)
 3. [Project Setup](#project-setup)
 4. [Design Decisions](#design-decisions)
