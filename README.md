@@ -191,6 +191,14 @@ gainNode.connect(audioContext.value.destination)
 
 These lines create a basic audio routing chain so the user can hear the sound. The oscillator connects to the gain node for volume control, and the gain node connects to the device's speakers or headphones (the `destination`).
 
+Now here's the button created in the HTML template:
+
+```vue
+<button @click="playNote">Play C Note</button>
+```
+
+`@click` is Vue's equivalent to JavaScript's `addEventListener('click')`. It calls `playNote` when the button is clicked.
+
 ---
 
 ## Multiple Notes
