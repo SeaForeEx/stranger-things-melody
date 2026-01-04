@@ -191,6 +191,22 @@ gainNode.connect(audioContext.value.destination)
 
 These lines create a basic audio routing chain so the user can hear the sound. The oscillator connects to the gain node for volume control, and the gain node connects to the device's speakers or headphones (the `destination`).
 
+```vue
+oscillator.frequency.value = 261.63
+oscillator.type = 'sine'
+gainNode.gain.value = 0.3
+```
+
+These lines configure the sound properties. The oscillator frequency is set to 261.63 Hz (C4 note), the wave type is set to sine (the basic building block of sound: a smooth, pure tone), and the gain is set to 0.3 (30% volume).
+
+```vue
+const now = audioContext.value.currentTime
+oscillator.start(now)
+oscillator.stop(now + 0.5)
+```
+
+These lines control when the note plays and for how long. `audioContext.currentTime` gets the current timestamp from the audio clock—similar to how React uses `Date.now()` for time tracking, but far more precise for audio scheduling. The oscillator starts immediately at that timestamp and stops 0.5 seconds later, creating a half-second note.
+
 Now here's the button created in the HTML template:
 
 ```vue
@@ -203,7 +219,21 @@ Now here's the button created in the HTML template:
 
 ## Multiple Notes
 
+Now that I had successfully connected to the Web Audio API to play the first note, it was time to play all five notes in the Stranger Things melody. This was a straightforward step: I created five buttons that each pass their specific frequency to the `playNote()` function.
 
+Here's the basic code:
+
+```vue
+function playNote(note: number) {
+    oscillator.frequency.value = note
+}
+
+<button @click="playNote(261.63)">C4</button>
+<button @click="playNote(329.63)">E4</button>
+<button @click="playNote(392.0)">G4</button>
+<button @click="playNote(493.88)">B4</button>
+<button @click="playNote(523.25)">C5</button>
+```
 
 ---
 
