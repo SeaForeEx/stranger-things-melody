@@ -28,6 +28,31 @@
         0 0 60px #ff0000;
 }
 
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    height: calc(100vh - 15rem);
+}
+
+.button {
+    background-color: rgb(26, 26, 127);
+    font-size: 2rem;
+    padding: 1rem;
+    color: #ef6060;
+    text-shadow:
+        0 0 5px #2b0101,
+        0 0 10px #920d0d,
+        0 0 20px #ec0b0b,
+        0 0 40px #ff0a0a,
+        0 0 60px #ff0000;
+    box-shadow:
+        0 0 5px #2b0101,
+        0 0 10px #920d0d,
+        0 0 20px #ec0b0b;
+}
+
 @font-face {
     font-family: 'Stranger Things';
     src: url('/fonts/stranger-things.ttf') format('truetype');
@@ -54,10 +79,32 @@
     .header {
         font-size: 3rem;
     }
+    .button-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        height: calc(100dvh - 16rem);
+    }
+    .button {
+        font-size: 2rem;
+        padding: 0.5rem;
+    }
 }
 
 @media (max-width: 375px) {
     .header {
         font-size: 2rem;
+    }
+    .button-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        height: calc(100dvh - 8rem);
+    }
+    .button {
+        font-size: 1.5rem;
+        padding: 0.5rem;
     }
 }

@@ -12,7 +12,7 @@ onMounted(() => {
     audioContext.value = new AudioContext()
 })
 
-function playNote() {
+function playNote(note: number) {
     // Check if AudioContext exists before trying to use it
     if (!audioContext.value) return
 
@@ -28,8 +28,8 @@ function playNote() {
     // Connect gain node to speakers (destination)
     gainNode.connect(audioContext.value.destination)
 
-    // Set the frequency to C4 (middle C on piano)
-    oscillator.frequency.value = 261.63
+    // Set the frequency to specific button frequency
+    oscillator.frequency.value = note
 
     // Set the wave type to sine (smooth, pure tone)
     oscillator.type = 'sine'
@@ -51,7 +51,13 @@ function playNote() {
 <template>
     <div class="app-container">
         <div class="outlined header">Welcome to HawkinS</div>
-        <button @click="playNote">Play C Note</button>
+        <div class="button-container">
+            <button class="outlined button" @click="playNote(261.63)">C4</button>
+            <button class="outlined button" @click="playNote(329.63)">E4</button>
+            <button class="outlined button" @click="playNote(392.0)">G4</button>
+            <button class="outlined button" @click="playNote(493.88)">B4</button>
+            <button class="outlined button" @click="playNote(523.25)">C5</button>
+        </div>
     </div>
 </template>
 
