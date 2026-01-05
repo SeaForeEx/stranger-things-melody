@@ -345,6 +345,66 @@ currentGain.value = null
 
 After creating `startNote()` and `stopNote()`, I realized I couldn't smoothly transition between notes when playing on the keyboard. I had to fully release one key before pressing another, which made playing feel choppy. I needed a fix for a more fluid playing experience.
 
+This required a long rubber ducking session where I had to think through the oscillator audio process and learn some new concepts along the way.
+```vue
+if (!audioContext.value || currentOscillator.value) return
+```
+
+This line in the `startNote()` function would exit if any note was already playing, preventing multiple notes from sounding simultaneously. That was one roadblock I had to fix.
+
+The main issue was my global `currentOscillator` variable. I only had storage for one oscillator but needed at least five, one for each note in the Stranger Things melody.
+
+At first, I created a `keyToOscillator` object similar to the `keyToFrequency` object that connects keys to their assigned frequencies. My initial plan was to pass the specific oscillator to the `startNote()` function.
+
+```vue
+const activeOscillators = ref<Map<number, [OscillatorNode, GainNode]>>(new Map())
+```
+
+After some research, I realized I needed to create a Map in global state to track all active oscillators. Unlike a single variable, a Map allows for dynamic changes and can track multiple oscillators simultaneously. This enabled me to press two keys at once for a smoother, more fluid playing experience.
+
+I decided to store both the Oscillator Node and Gain Node together in the `activeOscillators` Map because both are needed to properly stop a note: the oscillator ends playback and the gain creates a smooth fade out.
+
+The refactoring turned out to be simpler than expected. After replacing the single `currentOscillator` variable with the `activeOscillators` Map (keyed by frequency), I only needed to make small adjustments to the `startNote()` and `stopNote()` functions to use Map methods instead of direct variable assignment.
+
+```vue
+function startNote(note: number) {
+    ...
+
+    if (activeOscillators.value.has(note)) return
+
+    ...
+
+    activeOscillators.value.set(note, [oscillator, gainNode])
+}
+```
+
+The safety check now uses `.has()` to verify if a note is already playing before creating a new oscillator. To store the nodes, I use the Map's `.set()` method to add a new key-value pair, with the frequency as the key and an array containing both the oscillator and gain node as the value. This approach stores both nodes in a single line instead of two separate assignments.
+
+```vue
+function stopNote(note: number) {
+    if (!activeOscillators.value) return
+
+    const oscillator = activeOscillators!.value.get(note)
+
+    if (!oscillator || !oscillator[0] || !oscillator[1]) return
+
+    ...
+
+    oscillator[1].gain.exponentialRampToValueAtTime(0.01, now + 0.05)
+    oscillator[0].stop(now + 0.05)
+
+    activeOscillators.value.delete(note)
+}
+```
+
+The `stopNote()` function required more refactoring. With multiple notes playing simultaneously, I needed to pass the frequency as a parameter to identify which note to stop.
+
+The safety checks needed adjustment to work with the Map structure. The second check verifies that both array elements exist (oscillator[0] is the Oscillator Node, oscillator[1] is the Gain Node).
+
+When applying the fade out and stopping playback, I had to be careful with the array indices. `oscillator[1].gain` applies the volume fade to the Gain Node, while `oscillator[0].stop()` ends the Oscillator's playback. Mixing these up wouldn't work!
+
+Finally, I used the Map's `.delete()` method to remove the frequency key from `activeOscillators`, cleaning up the stopped note.
+
 ---
 
 ## More Design Decisions
