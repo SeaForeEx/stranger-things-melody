@@ -2,12 +2,13 @@
 // Import Vue Composition API functions
 import { ref, onMounted, onUnmounted } from 'vue'
 
-// Create reactive references for Web Audio API nodes
+// Reactive reference for Web Audio API context
 const audioContext = ref<AudioContext | null>(null)
-const currentOscillator = ref<OscillatorNode | null>(null)
-const currentGain = ref<GainNode | null>(null)
 
-// Map keyboard keys to frequencies
+// Map to track currently playing notes (frequency → [oscillator, gain])
+const activeOscillators = ref<Map<number, [OscillatorNode, GainNode]>>(new Map())
+
+// Lookup table: keyboard keys to note frequencies
 const keyToFrequency: Record<string, number> = {
     a: 261.63, // C4
     s: 329.63, // E4
@@ -38,7 +39,7 @@ function handleKeyDown(event: KeyboardEvent) {
     const frequency = keyToFrequency[key]
 
     // Exit if key is not mapped or note is already playing
-    if (!frequency || currentOscillator.value) return
+    if (!frequency) return
 
     // Prevent key repeat
     if (event.repeat) return
@@ -53,12 +54,13 @@ function handleKeyUp(event: KeyboardEvent) {
     // Only stop if the released key is one of our musical keys
     if (!frequency) return
 
-    stopNote()
+    stopNote(frequency)
 }
 
 function startNote(note: number) {
     // Exit if AudioContext doesn't exist OR if a note is already playing
-    if (!audioContext.value || currentOscillator.value) return
+    if (!audioContext.value) return
+    if (activeOscillators.value.has(note)) return
 
     // Create nodes
     const oscillator = audioContext.value.createOscillator()
@@ -76,27 +78,31 @@ function startNote(note: number) {
     // Start
     oscillator.start()
 
-    // Store references
-    currentOscillator.value = oscillator
-    currentGain.value = gainNode
+    // Store reference
+    activeOscillators.value.set(note, [oscillator, gainNode])
 }
 
-function stopNote() {
-    // Exit if no note is currently playing
-    if (!currentOscillator.value) return
+function stopNote(note: number) {
+    // Safety check: exit if no note is currently playing
+    if (!activeOscillators.value) return
+
+    // Get oscillator and gain node for this note
+    const oscillator = activeOscillators!.value.get(note)
+
+    // Safety check: exit if note isn't playing or nodes are missing
+    if (!oscillator || !oscillator[0] || !oscillator[1]) return
 
     // Get current audio timestamp for precise timing
     const now = audioContext.value!.currentTime
 
     // Fade out volume over 0.05 seconds to prevent clicking/popping
-    currentGain.value!.gain.exponentialRampToValueAtTime(0.01, now + 0.05)
+    oscillator[1].gain.exponentialRampToValueAtTime(0.01, now + 0.05)
 
     // Stop the oscillator after fade out completes
-    currentOscillator.value.stop(now + 0.05)
+    oscillator[0].stop(now + 0.05)
 
-    // Clear references so a new note can be started
-    currentOscillator.value = null
-    currentGain.value = null
+    // Remove this note from activeOscillators map
+    activeOscillators.value.delete(note)
 }
 </script>
 
@@ -107,40 +113,40 @@ function stopNote() {
             <button
                 class="outlined button"
                 @mousedown="startNote(261.63)"
-                @mouseup="stopNote"
-                @mouseleave="stopNote"
+                @mouseup="stopNote(261.63)"
+                @mouseleave="stopNote(261.63)"
             >
                 C4
             </button>
             <button
                 class="outlined button"
                 @mousedown="startNote(329.63)"
-                @mouseup="stopNote"
-                @mouseleave="stopNote"
+                @mouseup="stopNote(329.63)"
+                @mouseleave="stopNote(329.63)"
             >
                 E4
             </button>
             <button
                 class="outlined button"
                 @mousedown="startNote(392.0)"
-                @mouseup="stopNote"
-                @mouseleave="stopNote"
+                @mouseup="stopNote(392.0)"
+                @mouseleave="stopNote(392.0)"
             >
                 G4
             </button>
             <button
                 class="outlined button"
                 @mousedown="startNote(493.88)"
-                @mouseup="stopNote"
-                @mouseleave="stopNote"
+                @mouseup="stopNote(493.88)"
+                @mouseleave="stopNote(493.88)"
             >
                 B4
             </button>
             <button
                 class="outlined button"
                 @mousedown="startNote(523.25)"
-                @mouseup="stopNote"
-                @mouseleave="stopNote"
+                @mouseup="stopNote(523.25)"
+                @mouseleave="stopNote(523.25)"
             >
                 C5
             </button>
