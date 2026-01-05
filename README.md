@@ -20,10 +20,11 @@ Recreate the iconic Stranger Things theme melody note-by-note with this interact
 5. [Play One Note](#play-one-note)
 6. [Multiple Notes](#multiple-notes)
 7. [Keyboard Functionality](#keyboard-functionality)
-8. [Rolling Keys](#rolling-keys)
-9. [More Design Decisions](#more-design-decisions)
-10. [Future Enhancements](#future-enhancements)
-11. [Contact](#contact)
+8. [Sustain Notes](#sustain-notes)
+9. [Rolling Keys](#rolling-keys)
+10. [More Design Decisions](#more-design-decisions)
+11. [Future Enhancements](#future-enhancements)
+12. [Contact](#contact)
 
 ## Learning Goals
 
@@ -312,6 +313,11 @@ function handleKeyUp(event: KeyboardEvent) {
 
 When a key is pressed, `handleKeyDown()` uses this object to find the correct frequency to play. When released, `handleKeyUp()` checks if the key is in this mapping before stopping the note.
 
+---
+
+## Sustain Notes
+
+My synthesizer was ending notes after 0.5 seconds, but I wanted them to sustain as long as the user held down the button or key.
 
 ### startNote function splits into playNote and stopNote functions
 
@@ -323,7 +329,7 @@ function startNote() {
 }
 ```
 
-The `startNote()` function starts the oscillator and stores references to the oscillator and gain nodes in global state so `stopNote()` can access them later.
+`startNote()` begins playing the note without a stop time, letting it sustain indefinitely. It stores the oscillator and gain node in global state so `stopNote()` can access them when the user releases.
 
 ```vue
 currentOscillator.value.stop(now + 0.05)
@@ -331,11 +337,13 @@ currentOscillator.value = null
 currentGain.value = null
 ```
 
-The `stopNote()` function stops the oscillator after a 0.05 second fade out, then resets `currentOscillator` and `currentGain` to null so a new note can be played.
+`stopNote()` stops the oscillator after a 0.05 second fade out, then resets `currentOscillator` and `currentGain` to null so a new note can be played.
 
 ---
 
 ## Rolling Keys
+
+After creating `startNote()` and `stopNote()`, I realized I couldn't smoothly transition between notes when playing on the keyboard. I had to fully release one key before pressing another, which made playing feel choppy. I needed a fix for a more fluid playing experience.
 
 ---
 
