@@ -239,6 +239,100 @@ function playNote(note: number) {
 
 ## Keyboard Functionality
 
+While it is fun to click on buttons and hear a sound, it just didn't feel right. I need the tactile sensation of pressing a key, so I decided to add keyboard functionality to add a layer of realism to my app.
+
+Here are the steps I took to add keyboard functionality:
+
+### Create Global State for Oscillator and Gain Nodes
+
+```vue
+const currentOscillator = ref<OscillatorNode | null>(null)
+const currentGain = ref<GainNode | null>(null)
+```
+
+I wanted only one note to play at a time, when a new note starts, the current one should stop. To handle this, I split `playNote()` into two functions: `startNote()` and `stopNote()`. Since both functions need to modify the same oscillator and gain node, I moved them into global state so they could be accessed and controlled by both functions.
+
+### Added Keyboard Event Listeners to onMounted Composition API function
+
+```vue
+onMounted(() => {
+    window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('keyup', handleKeyUp)
+})
+```
+
+I used Vue event listeners for the button clicks because `@click` connects directly to button elements. For keyboard input, I used JavaScript event listeners attached to the `window` object because keyboard events aren't tied to a specific element but need to work anywhere on the page.
+
+When a key is pressed, `keydown` calls `handleKeyDown`. When released, `keyup` calls `handleKeyUp`. Both functions receive information about which key was pressed through the `KeyboardEvent` object, allowing them to look up the correct frequency.
+
+### Import/Create onUnmounted Composition API function with Keyboard Event Listeners
+
+```vue
+import { onUnmounted } from 'vue'
+
+onUnmounted(() => {
+    window.removeEventListener('keydown', handleKeyDown)
+    window.removeEventListener('keyup', handleKeyUp)
+})
+```
+
+`onUnmounted()` is a lifecycle hook that runs cleanup code when the component is destroyed or removed from the DOM. It removes the keyboard event listeners that were added in `onMounted()`. Without this cleanup, the listeners would continue to exist even after the component is gone, creating a memory leak that can slow down or crash the app over time.
+
+This isn't a problem right now for my single-page app, as the component only unmounts when the user leaves the page. I kept it to practice proper cleanup patterns for when I build larger scale Vue apps with multiple components and routing.
+
+### Connect Keyboard to Frequencies
+
+```vue
+const keyToFrequency: Record<string, number> = {
+    a: 261.63, // C4
+    s: 329.63, // E4
+    d: 392.0, // G4
+    f: 493.88, // B4
+    g: 523.25, // C5
+}
+```
+
+`keyToFrequency` is a lookup table that maps keyboard keys (`a`, `s`, `d`, `f`, `g`) to their corresponding musical note frequencies. 
+
+```vue
+function handleKeyDown(event: KeyboardEvent) {
+    const key = event.key.toLowerCase()
+    const frequency = keyToFrequency[key]
+
+    startNote(frequency)
+}
+
+function handleKeyUp(event: KeyboardEvent) {
+    const key = event.key.toLowerCase()
+    const frequency = keyToFrequency[key]
+
+    stopNote()
+}
+```
+
+When a key is pressed, `handleKeyDown()` uses this object to find the correct frequency to play. When released, `handleKeyUp()` checks if the key is in this mapping before stopping the note.
+
+
+### startNote function splits into playNote and stopNote functions
+
+```vue
+function startNote() {
+    oscillator.start()
+    currentOscillator.value = oscillator
+    currentGain.value = gainNode
+}
+```
+
+The `startNote()` function starts the oscillator and stores references to the oscillator and gain nodes in global state so `stopNote()` can access them later.
+
+```vue
+currentOscillator.value.stop(now + 0.05)
+currentOscillator.value = null
+currentGain.value = null
+```
+
+The `stopNote()` function stops the oscillator after a 0.05 second fade out, then resets `currentOscillator` and `currentGain` to null so a new note can be played.
+
 ---
 
 ## Rolling Keys
