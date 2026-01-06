@@ -453,7 +453,7 @@ Good future idea, but my kiddo said "it looks better now", so that's good enough
 
 ---
 
-## Mobile Compatability Challenge
+## Mobile Compatibility Challenge
 
 After I deployed the app with Netlify, a challenge arose. The audio playback worked fine on my desktop, but when I tested it on my mobile browser, I heard nothing.
 
@@ -461,9 +461,41 @@ How do you debug a mobile browser?
 
 I researched several ways and found that navigating to `chrome://inspect` in my desktop Chrome browser was the easiest and most effective way to check console.logs on a mobile browser. Any method that doesn't involve downloading or buying something works for me.
 
-<img src="screenshots/chrome-extend.jpg" alt="chrome://inspect" width="50%" />
+<img src="screenshots/chrome-inspect.png" alt="chrome://inspect" width="75%" />
 
-Through the console logs, I discovered that mobile browsers (Chrome, Safari) start the Web Audio API's AudioContext in a "suspended" state due to autoplay policies. The AudioContext requires explicit user interaction to resume.
+Through the console logs, I discovered that my Chrome mobile browser starts the Web Audio API's AudioContext in a `suspended` state due to autoplay policies. The AudioContext requires explicit user interaction to resume.
+
+```typescript
+function startNote(note: number) {
+    // ...
+
+    if (audioContext.value.state === 'suspended') {
+        try {
+            audioContext.value.resume()
+        } catch (error) {
+            console.error('Failed to resume context:', error)
+            return
+        }
+    }
+
+    // ...
+}
+```
+
+The conditional in the `startNote()` function checks if the `AudioContext` is suspended. If it is suspended, the `.resume()` call wakes up the context so users can hear sound on their mobile devices.
+
+```html
+<button
+    class="key-button"
+    @mousedown="startNote(261.63)"
+    @mouseup="stopNote(261.63)"
+    @mouseleave="stopNote(261.63)"
+    @touchstart.prevent="startNote(261.63)"
+    @touchend.prevent="stopNote(261.63)"
+>
+```
+
+I also added touch event handlers to the key buttons for better mobile support. The `.prevent` modifier keeps the mouse events from firing if a touch event is triggered, preventing duplicate sound playback.
 
 ---
 
