@@ -129,6 +129,12 @@ function stopNote(note: number) {
             <p>Press the keys A, S, D, F, G (or click the buttons) to play the melody!</p>
             <br />
             <p>Sequence: A→S→D→F→G→F→D→S</p>
+            <br />
+            <div class="silent-mode-container">
+                <p class="silent-mode">📱 iPhone/iPad users:</p>
+                &nbsp;
+                <p class="silent-mode">TURN OFF SILENT MODE!</p>
+            </div>
         </div>
         <div class="button-container">
             <div class="button-and-label">
