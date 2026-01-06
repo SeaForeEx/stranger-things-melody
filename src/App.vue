@@ -57,7 +57,7 @@ function handleKeyUp(event: KeyboardEvent) {
     stopNote(frequency)
 }
 
-async function startNote(note: number) {
+function startNote(note: number) {
     // Exit if AudioContext doesn't exist
     if (!audioContext.value) {
         return
@@ -66,7 +66,7 @@ async function startNote(note: number) {
     // Resume AudioContext if suspended (required for mobile)
     if (audioContext.value.state === 'suspended') {
         try {
-            await audioContext.value.resume()
+            audioContext.value.resume()
         } catch (error) {
             console.error('Failed to resume context:', error)
             return
