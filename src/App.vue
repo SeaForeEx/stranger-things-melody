@@ -58,15 +58,30 @@ function handleKeyUp(event: KeyboardEvent) {
 }
 
 async function startNote(note: number) {
-    // Exit if AudioContext doesn't exist OR if a note is already playing
-    if (!audioContext.value) return
+    console.log('startNote called', note)
+
+    // Exit if AudioContext doesn't exist
+    if (!audioContext.value) {
+        console.log('no audioContext')
+        return
+    }
+
+    console.log('AudioContext state:', audioContext.value.state)
 
     // Resume AudioContext if suspended (required for mobile)
     if (audioContext.value.state === 'suspended') {
+        console.log('Resuming suspended context...')
         await audioContext.value.resume()
+        console.log('Context resumed, new state:', audioContext.value.state)
     }
 
-    if (activeOscillators.value.has(note)) return
+    // Exit if note is already playing
+    if (activeOscillators.value.has(note)) {
+        console.log('Note already playing')
+        return
+    }
+
+    console.log('Creating oscillator...')
 
     // Create nodes
     const oscillator = audioContext.value.createOscillator()
@@ -83,6 +98,8 @@ async function startNote(note: number) {
 
     // Start
     oscillator.start()
+
+    console.log('Oscillator started')
 
     // Store reference
     activeOscillators.value.set(note, [oscillator, gainNode])
