@@ -160,7 +160,7 @@ Every `.vue` file is a Single File Component combining HTML, TypeScript, and CSS
 
 Let's break this code down:
 
-```vue
+```typescript
 import { ref, onMounted } from 'vue'
 
 const audioContext = ref<AudioContext | null>(null)
@@ -176,27 +176,27 @@ onMounted(() => {
 
 Now let's break down the `playSound()` function:
 
-```vue
+```typescript
 if (!audioContext.value) return
 ```
 
 This safety check exits the function immediately if `audioContext` is still null (hasn't been initialized yet).
 
-```vue
+```typescript
 const oscillator = audioContext.value.createOscillator()
 const gainNode = audioContext.value.createGain()
 ```
 
 These lines create an oscillator node (sound generator) and a gain node (volume controller).
 
-```vue
+```typescript
 oscillator.connect(gainNode)
 gainNode.connect(audioContext.value.destination)
 ```
 
 These lines create a basic audio routing chain so the user can hear the sound. The oscillator connects to the gain node for volume control, and the gain node connects to the device's speakers or headphones (the `destination`).
 
-```vue
+```typescript
 oscillator.frequency.value = 261.63
 oscillator.type = 'sine'
 gainNode.gain.value = 0.3
@@ -204,7 +204,7 @@ gainNode.gain.value = 0.3
 
 These lines configure the sound properties. The oscillator frequency is set to 261.63 Hz (C4 note), the wave type is set to sine (the basic building block of sound: a smooth, pure tone), and the gain is set to 0.3 (30% volume).
 
-```vue
+```typescript
 const now = audioContext.value.currentTime
 oscillator.start(now)
 oscillator.stop(now + 0.5)
@@ -214,7 +214,7 @@ These lines control when the note plays and for how long. `audioContext.currentT
 
 Now here's the button created in the HTML template:
 
-```vue
+```html
 <button @click="playNote">Play C Note</button>
 ```
 
@@ -228,7 +228,7 @@ Now that I had successfully connected to the Web Audio API to play the first not
 
 Here's the basic code:
 
-```vue
+```typescript
 function playNote(note: number) {
     oscillator.frequency.value = note
 }
@@ -250,7 +250,7 @@ Here are the steps I took to add keyboard functionality:
 
 ### Create Global State for Oscillator and Gain Nodes
 
-```vue
+```typescript
 const currentOscillator = ref<OscillatorNode | null>(null)
 const currentGain = ref<GainNode | null>(null)
 ```
@@ -259,7 +259,7 @@ I wanted only one note to play at a time, when a new note starts, the current on
 
 ### Added Keyboard Event Listeners to onMounted Composition API function
 
-```vue
+```typescript
 onMounted(() => {
     window.addEventListener('keydown', handleKeyDown)
     window.addEventListener('keyup', handleKeyUp)
@@ -272,7 +272,7 @@ When a key is pressed, `keydown` calls `handleKeyDown`. When released, `keyup` c
 
 ### Import/Create onUnmounted Composition API function with Keyboard Event Listeners
 
-```vue
+```typescript
 import { onUnmounted } from 'vue'
 
 onUnmounted(() => {
@@ -287,7 +287,7 @@ This isn't a problem right now for my single-page app, as the component only unm
 
 ### Connect Keyboard to Frequencies
 
-```vue
+```typescript
 const keyToFrequency: Record<string, number> = {
     a: 261.63, // C4
     s: 329.63, // E4
@@ -299,7 +299,7 @@ const keyToFrequency: Record<string, number> = {
 
 `keyToFrequency` is a lookup table that maps keyboard keys (`a`, `s`, `d`, `f`, `g`) to their corresponding musical note frequencies. 
 
-```vue
+```typescript
 function handleKeyDown(event: KeyboardEvent) {
     const key = event.key.toLowerCase()
     const frequency = keyToFrequency[key]
@@ -325,7 +325,7 @@ My synthesizer was ending notes after 0.5 seconds, but I wanted them to sustain 
 
 ### startNote function splits into playNote and stopNote functions
 
-```vue
+```typescript
 function startNote() {
     oscillator.start()
     currentOscillator.value = oscillator
@@ -335,7 +335,7 @@ function startNote() {
 
 `startNote()` begins playing the note without a stop time, letting it sustain indefinitely. It stores the oscillator and gain node in global state so `stopNote()` can access them when the user releases.
 
-```vue
+```typescript
 currentOscillator.value.stop(now + 0.05)
 currentOscillator.value = null
 currentGain.value = null
@@ -350,7 +350,7 @@ currentGain.value = null
 After creating `startNote()` and `stopNote()`, I realized I couldn't smoothly transition between notes when playing on the keyboard. I had to fully release one key before pressing another, which made playing feel choppy. I needed a fix for a more fluid playing experience.
 
 This required a long rubber ducking session where I had to think through the oscillator audio process and learn some new concepts along the way.
-```vue
+```typescript
 if (!audioContext.value || currentOscillator.value) return
 ```
 
@@ -360,7 +360,7 @@ The main issue was my global `currentOscillator` variable. I only had storage fo
 
 At first, I created a `keyToOscillator` object similar to the `keyToFrequency` object that connects keys to their assigned frequencies. My initial plan was to pass the specific oscillator to the `startNote()` function.
 
-```vue
+```typescript
 const activeOscillators = ref<Map<number, [OscillatorNode, GainNode]>>(new Map())
 ```
 
@@ -370,13 +370,13 @@ I decided to store both the Oscillator Node and Gain Node together in the `activ
 
 The refactoring turned out to be simpler than expected. After replacing the single `currentOscillator` variable with the `activeOscillators` Map (keyed by frequency), I only needed to make small adjustments to the `startNote()` and `stopNote()` functions to use Map methods instead of direct variable assignment.
 
-```vue
+```typescript
 function startNote(note: number) {
-    ...
+    // ...
 
     if (activeOscillators.value.has(note)) return
 
-    ...
+    // ...
 
     activeOscillators.value.set(note, [oscillator, gainNode])
 }
@@ -384,7 +384,7 @@ function startNote(note: number) {
 
 The safety check now uses `.has()` to verify if a note is already playing before creating a new oscillator. To store the nodes, I use the Map's `.set()` method to add a new key-value pair, with the frequency as the key and an array containing both the oscillator and gain node as the value. This approach stores both nodes in a single line instead of two separate assignments.
 
-```vue
+```typescript
 function stopNote(note: number) {
     if (!activeOscillators.value) return
 
@@ -392,7 +392,7 @@ function stopNote(note: number) {
 
     if (!oscillator || !oscillator[0] || !oscillator[1]) return
 
-    ...
+    // ...
 
     oscillator[1].gain.exponentialRampToValueAtTime(0.01, now + 0.05)
     oscillator[0].stop(now + 0.05)
