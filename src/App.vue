@@ -60,6 +60,12 @@ function handleKeyUp(event: KeyboardEvent) {
 function startNote(note: number) {
     // Exit if AudioContext doesn't exist OR if a note is already playing
     if (!audioContext.value) return
+
+    // Resume AudioContext if suspended (required for mobile)
+    if (audioContext.value.state === 'suspended') {
+        audioContext.value.resume()
+    }
+
     if (activeOscillators.value.has(note)) return
 
     // Create nodes
@@ -121,6 +127,8 @@ function stopNote(note: number) {
                     @mousedown="startNote(261.63)"
                     @mouseup="stopNote(261.63)"
                     @mouseleave="stopNote(261.63)"
+                    @touchstart.prevent="startNote(261.63)"
+                    @touchend.prevent="stopNote(261.63)"
                 >
                     A
                 </button>
@@ -132,6 +140,8 @@ function stopNote(note: number) {
                     @mousedown="startNote(329.63)"
                     @mouseup="stopNote(329.63)"
                     @mouseleave="stopNote(329.63)"
+                    @touchstart.prevent="startNote(329.63)"
+                    @touchend.prevent="stopNote(329.63)"
                 >
                     S
                 </button>
@@ -143,6 +153,8 @@ function stopNote(note: number) {
                     @mousedown="startNote(392.0)"
                     @mouseup="stopNote(392.0)"
                     @mouseleave="stopNote(392.0)"
+                    @touchstart.prevent="startNote(392.0)"
+                    @touchend.prevent="stopNote(392.0)"
                 >
                     D
                 </button>
@@ -154,6 +166,8 @@ function stopNote(note: number) {
                     @mousedown="startNote(493.88)"
                     @mouseup="stopNote(493.88)"
                     @mouseleave="stopNote(493.88)"
+                    @touchstart.prevent="startNote(493.88)"
+                    @touchend.prevent="stopNote(493.88)"
                 >
                     F
                 </button>
@@ -165,6 +179,8 @@ function stopNote(note: number) {
                     @mousedown="startNote(523.25)"
                     @mouseup="stopNote(523.25)"
                     @mouseleave="stopNote(523.25)"
+                    @touchstart.prevent="startNote(523.25)"
+                    @touchend.prevent="stopNote(523.25)"
                 >
                     G
                 </button>
