@@ -46,12 +46,26 @@
         0 0 10px #920d0d;
 }
 
+.silent-mode-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.silent-mode {
+    color: #e3c51b;
+    text-shadow:
+        2px 2px 4px rgba(0, 0, 0, 0.8),
+        0 0 10px rgba(255, 215, 0, 0.6);
+}
+
 .button-container {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 1rem;
-    height: calc(100vh - 30rem);
+    height: calc(100vh - 35rem);
 }
 
 .button-and-label {
@@ -157,6 +171,12 @@
         padding: 0.75rem 1rem;
         margin-bottom: 0;
         z-index: 100;
+    }
+    .silent-mode-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
 }
 
