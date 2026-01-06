@@ -1,11 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
 }
 
 .app-container {
-    background-image: url('/stm-logo.png');
+    background-image: url('/stm-desktop-2.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -26,6 +29,21 @@
         0 0 20px #ec0b0b,
         0 0 40px #ff0a0a,
         0 0 60px #ff0000;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+}
+
+.instructions {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #ef6060;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    text-shadow:
+        0 0 5px #2b0101,
+        0 0 10px #920d0d;
 }
 
 .button-container {
@@ -33,24 +51,59 @@
     justify-content: center;
     align-items: center;
     gap: 1rem;
-    height: calc(100vh - 15rem);
+    height: calc(100vh - 30rem);
 }
 
-.button {
-    background-color: rgb(26, 26, 127);
+.button-and-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.key-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(180deg, #f5f5f5 0%, #e0e0e0 100%);
+    border: 2px solid #999;
+    border-radius: 8px;
+    box-shadow:
+        0 4px 0 #888,
+        0 6px 8px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: all 0.1s ease;
+    font-family: Arial, sans-serif;
+    padding: 0.5rem;
+}
+
+.key-button:active {
+    transform: translateY(4px);
+    box-shadow:
+        0 1px 0 #888,
+        0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.note-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    margin-top: 0.5rem;
     font-size: 2rem;
-    padding: 1rem;
+    font-weight: bold;
     color: #ef6060;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
     text-shadow:
         0 0 5px #2b0101,
-        0 0 10px #920d0d,
-        0 0 20px #ec0b0b,
-        0 0 40px #ff0a0a,
-        0 0 60px #ff0000;
-    box-shadow:
-        0 0 5px #2b0101,
-        0 0 10px #920d0d,
-        0 0 20px #ec0b0b;
+        0 0 10px #920d0d;
 }
 
 @font-face {
@@ -72,9 +125,9 @@
 }
 
 /* Mobile optimization */
-@media (max-width: 768px) {
+@media (max-width: 480px) {
     .app-container {
-        background-image: url('/stm-logo-mobile.png');
+        background-image: url('/stm-mobile-2.jpg');
     }
     .header {
         font-size: 3rem;
@@ -84,11 +137,26 @@
         justify-content: center;
         align-items: center;
         gap: 1rem;
-        height: calc(100dvh - 16rem);
+        height: calc(100dvh - 50rem);
     }
-    .button {
-        font-size: 2rem;
-        padding: 0.5rem;
+    .key-button {
+        width: 60px;
+        height: 60px;
+    }
+    .note-label {
+        width: 60px;
+        font-size: 1.5rem;
+    }
+    .instructions {
+        position: fixed;
+        bottom: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        font-size: 1.25rem;
+        padding: 0.75rem 1rem;
+        margin-bottom: 0;
+        z-index: 100;
     }
 }
 
@@ -101,10 +169,25 @@
         justify-content: center;
         align-items: center;
         gap: 1rem;
-        height: calc(100dvh - 8rem);
+        height: calc(100dvh - 35rem);
     }
-    .button {
-        font-size: 1.5rem;
-        padding: 0.5rem;
+    .key-button {
+        width: 50px;
+        height: 50px;
+    }
+    .note-label {
+        width: 50px;
+        font-size: 1rem;
+    }
+    .instructions {
+        position: fixed;
+        bottom: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        font-size: 1rem;
+        padding: 0.75rem 1rem;
+        margin-bottom: 0;
+        z-index: 100;
     }
 }

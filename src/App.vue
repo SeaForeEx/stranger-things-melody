@@ -108,48 +108,68 @@ function stopNote(note: number) {
 
 <template>
     <div class="app-container">
-        <div class="outlined header">Welcome to HawkinS</div>
+        <div class="outlined header">Stranger ThingS MelodY</div>
+        <div class="instructions">
+            <p>Press the keys A, S, D, F, G (or click the buttons) to play the melody!</p>
+            <br />
+            <p>Sequence: A→S→D→F→G→F→D→S</p>
+        </div>
         <div class="button-container">
-            <button
-                class="outlined button"
-                @mousedown="startNote(261.63)"
-                @mouseup="stopNote(261.63)"
-                @mouseleave="stopNote(261.63)"
-            >
-                C4
-            </button>
-            <button
-                class="outlined button"
-                @mousedown="startNote(329.63)"
-                @mouseup="stopNote(329.63)"
-                @mouseleave="stopNote(329.63)"
-            >
-                E4
-            </button>
-            <button
-                class="outlined button"
-                @mousedown="startNote(392.0)"
-                @mouseup="stopNote(392.0)"
-                @mouseleave="stopNote(392.0)"
-            >
-                G4
-            </button>
-            <button
-                class="outlined button"
-                @mousedown="startNote(493.88)"
-                @mouseup="stopNote(493.88)"
-                @mouseleave="stopNote(493.88)"
-            >
-                B4
-            </button>
-            <button
-                class="outlined button"
-                @mousedown="startNote(523.25)"
-                @mouseup="stopNote(523.25)"
-                @mouseleave="stopNote(523.25)"
-            >
-                C5
-            </button>
+            <div class="button-and-label">
+                <button
+                    class="key-button"
+                    @mousedown="startNote(261.63)"
+                    @mouseup="stopNote(261.63)"
+                    @mouseleave="stopNote(261.63)"
+                >
+                    A
+                </button>
+                <span class="note-label">C4</span>
+            </div>
+            <div class="button-and-label">
+                <button
+                    class="key-button"
+                    @mousedown="startNote(329.63)"
+                    @mouseup="stopNote(329.63)"
+                    @mouseleave="stopNote(329.63)"
+                >
+                    S
+                </button>
+                <span class="note-label">E4</span>
+            </div>
+            <div class="button-and-label">
+                <button
+                    class="key-button"
+                    @mousedown="startNote(392.0)"
+                    @mouseup="stopNote(392.0)"
+                    @mouseleave="stopNote(392.0)"
+                >
+                    D
+                </button>
+                <span class="note-label">G4</span>
+            </div>
+            <div class="button-and-label">
+                <button
+                    class="key-button"
+                    @mousedown="startNote(493.88)"
+                    @mouseup="stopNote(493.88)"
+                    @mouseleave="stopNote(493.88)"
+                >
+                    F
+                </button>
+                <span class="note-label">B4</span>
+            </div>
+            <div class="button-and-label">
+                <button
+                    class="key-button"
+                    @mousedown="startNote(523.25)"
+                    @mouseup="stopNote(523.25)"
+                    @mouseleave="stopNote(523.25)"
+                >
+                    G
+                </button>
+                <span class="note-label">C5</span>
+            </div>
         </div>
     </div>
 </template>
