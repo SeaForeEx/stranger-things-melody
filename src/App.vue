@@ -57,13 +57,13 @@ function handleKeyUp(event: KeyboardEvent) {
     stopNote(frequency)
 }
 
-function startNote(note: number) {
+async function startNote(note: number) {
     // Exit if AudioContext doesn't exist OR if a note is already playing
     if (!audioContext.value) return
 
     // Resume AudioContext if suspended (required for mobile)
     if (audioContext.value.state === 'suspended') {
-        audioContext.value.resume()
+        await audioContext.value.resume()
     }
 
     if (activeOscillators.value.has(note)) return
