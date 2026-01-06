@@ -22,11 +22,6 @@ onMounted(() => {
     // Initialize the AudioContext (enables Web Audio API)
     audioContext.value = new AudioContext()
 
-    console.log('AudioContext created')
-    console.log('Initial state:', audioContext.value.state)
-    console.log('Destination:', audioContext.value.destination)
-    console.log('Sample rate:', audioContext.value.sampleRate)
-
     // Add keyboard event listeners
     window.addEventListener('keydown', handleKeyDown)
     window.addEventListener('keyup', handleKeyUp)
@@ -63,22 +58,15 @@ function handleKeyUp(event: KeyboardEvent) {
 }
 
 async function startNote(note: number) {
-    console.log('startNote called', note)
-
     // Exit if AudioContext doesn't exist
     if (!audioContext.value) {
-        console.log('no audioContext')
         return
     }
 
-    console.log('AudioContext state:', audioContext.value.state)
-
     // Resume AudioContext if suspended (required for mobile)
     if (audioContext.value.state === 'suspended') {
-        console.log('Resuming suspended context...')
         try {
             await audioContext.value.resume()
-            console.log('Context resumed, new state:', audioContext.value.state)
         } catch (error) {
             console.error('Failed to resume context:', error)
             return
@@ -87,11 +75,8 @@ async function startNote(note: number) {
 
     // Exit if note is already playing
     if (activeOscillators.value.has(note)) {
-        console.log('Note already playing')
         return
     }
-
-    console.log('Creating oscillator...')
 
     // Create nodes
     const oscillator = audioContext.value.createOscillator()
@@ -104,18 +89,10 @@ async function startNote(note: number) {
     // Configure
     oscillator.frequency.value = note
     oscillator.type = 'sine'
-    gainNode.gain.value = 1.0
-
-    console.log('Oscillator configured:')
-    console.log('- Frequency:', note)
-    console.log('- Type:', oscillator.type)
-    console.log('- Gain:', gainNode.gain.value)
-    console.log('- Gain outputs:', gainNode.numberOfOutputs)
+    gainNode.gain.value = 0.3
 
     // Start
     oscillator.start()
-
-    console.log('Oscillator started')
 
     // Store reference
     activeOscillators.value.set(note, [oscillator, gainNode])
