@@ -2,6 +2,8 @@
 
 Recreate the iconic Stranger Things theme melody note-by-note with this interactive Vue.js application powered by Web Audio API.
 
+[![Live Demo](https://img.shields.io/badge/🎵_Try_Live_Demo-4CAF50?style=for-the-badge&logoColor=white)](https://stranger-things-melody.netlify.app/)
+
 [![Vue.js](https://img.shields.io/badge/Vue.js-4FC08D?style=flat&logo=vue.js&logoColor=white)](https://vuejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
@@ -11,6 +13,7 @@ Recreate the iconic Stranger Things theme melody note-by-note with this interact
 [![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat&logo=node.js&logoColor=white)](https://nodejs.org/)
 [![NPM](https://img.shields.io/badge/NPM-CB3837?style=flat&logo=npm&logoColor=white)](https://www.npmjs.com/)
 [![Web Audio API](https://img.shields.io/badge/Web_Audio_API-FF6B35?style=flat&logo=audiomack&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/7f313ae0-f7ed-4623-be67-30955720539e/deploy-status)](https://app.netlify.com/projects/stranger-things-melody/deploys)
 
 ## Table of Contents
 1. [Learning Goals](#learning-goals)
@@ -91,7 +94,7 @@ One thing I've learned about my process is that I prefer making the site visuall
 
 ### Desktop View
 
-<img src="screenshots/stm-desktop.png" alt="STM Desktop View" width="75%" />
+<img src="screenshots/stm-desktop.png" alt="STM Desktop View" width="50%" />
 
 I downloaded a free Stranger Things-style font from [FontGet](https://www.fontget.com/font/stranger-things-1/). It included an outlined version that I used in the "Welcome to Hawkins" header.
 
@@ -101,7 +104,7 @@ Finally, I created five buttons representing the five notes in the basic Strange
 
 ### Mobile View
 
-<img src="screenshots/stm-mobile.png" alt="STM Mobile View" width="50%" />
+<img src="screenshots/stm-mobile.png" alt="STM Mobile View" width="30%" />
 
 When designing the mobile view, I realized the desktop background didn't translate well to taller screens. I considered creating a different background entirely, but then it hit me: I could stack the background vertically with the bottom half flipped upside down—mirroring the Upside Down from Stranger Things. It solved the problem creatively and stayed true to the theme. Everyone wins!
 
@@ -411,7 +414,7 @@ Finally, I used the Map's `.delete()` method to remove the frequency key from `a
 
 When I showed my kid the website, she immediately cringed. She hated the text being in the background and thought the image was too dark. She just confirmed what was in the back of my head while coding: I needed a redesign.
 
-<img src="screenshots/stm-desktop-ss-2.png" alt="STM Desktop View" width="75%" />
+<img src="screenshots/stm-desktop-ss-2.png" alt="STM Desktop View" width="50%" />
 
 I found an actual Stranger Things background, one that was brighter and looks really cool in both Desktop and Mobile views. The kids look up at the keys and I thought that was nice design work, focuses the user at the buttons. It was a plus that the image had a "Welcome to Hawkins" sign so I could change the header to "Stranger Things Melody" instead of having it covered by the keys.
 
@@ -419,7 +422,7 @@ The buttons also didn't look good, The dark blue color and Stranger Things font 
 
 And the mobile view...
 
-<img src="screenshots/stm-mobile-ss-2.png" alt="STM Mobile View" width="50%" />
+<img src="screenshots/stm-mobile-ss-2.png" alt="STM Mobile View" width="30%" />
 
 ...it's so satisfying to see this background image "Upside Down", it really looks cooler than the previous background image. 
 
