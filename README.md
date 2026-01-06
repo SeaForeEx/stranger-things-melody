@@ -461,7 +461,7 @@ How do you debug a mobile browser?
 
 I researched several ways and found that navigating to `chrome://inspect` in my desktop Chrome browser was the easiest and most effective way to check console.logs on a mobile browser. Any method that doesn't involve downloading or buying something works for me.
 
-<img src="screenshots/chrome-inspect.png" alt="chrome://inspect" width="75%" />
+<img src="screenshots/chrome-inspect.png" alt="chrome://inspect" width="50%" />
 
 Through the console logs, I discovered that my Chrome mobile browser starts the Web Audio API's AudioContext in a `suspended` state due to autoplay policies. The AudioContext requires explicit user interaction to resume.
 
