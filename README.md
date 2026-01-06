@@ -26,8 +26,9 @@ Recreate the iconic Stranger Things theme melody note-by-note with this interact
 8. [Sustain Notes](#sustain-notes)
 9. [Rolling Keys](#rolling-keys)
 10. [More Design Decisions](#more-design-decisions)
-11. [Future Enhancements](#future-enhancements)
-12. [Contact](#contact)
+11. [Mobile Compatibility Challenge](#mobile-compatibility-challenge)
+12. [Future Enhancements](#future-enhancements)
+13. [Contact](#contact)
 
 ## Learning Goals
 
@@ -449,6 +450,20 @@ I created a media query for the instructions div to show up on the bottom of the
 Now that I think about it, it would be cool to take the upside down version of the background and make it look darker, more like the Upside Down from the series.
 
 Good future idea, but my kiddo said "it looks better now", so that's good enough now for MVP.
+
+---
+
+## Mobile Compatability Challenge
+
+After I deployed the app with Netlify, a challenge arose. The audio playback worked fine on my desktop, but when I tested it on my mobile browser, I heard nothing.
+
+How do you debug a mobile browser? 
+
+I researched several ways and found that navigating to `chrome://inspect` in my desktop Chrome browser was the easiest and most effective way to check console.logs on a mobile browser. Any method that doesn't involve downloading or buying something works for me.
+
+<img src="screenshots/chrome-extend.jpg" alt="chrome://inspect" width="50%" />
+
+Through the console logs, I discovered that mobile browsers (Chrome, Safari) start the Web Audio API's AudioContext in a "suspended" state due to autoplay policies. The AudioContext requires explicit user interaction to resume.
 
 ---
 
