@@ -420,6 +420,8 @@ I found an actual Stranger Things background, one that was brighter and looks re
 
 The buttons also didn't look good, The dark blue color and Stranger Things font were hard to read and didn't fit with the colors of the new background. I decided to simulate the look of computer keyboard keys and use that instead for a more intuitive User Experience. I still kept the notes below the keys for the users who want to know which notes they are playing.
 
+I tested the site by showing it to one of my kiddo's friends and I watched them read the instructions and within a minute they were playing the melody perfectly. SUCCESS!
+
 And the mobile view...
 
 <img src="screenshots/stm-mobile-ss-2.png" alt="STM Mobile View" width="30%" />
