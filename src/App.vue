@@ -22,6 +22,11 @@ onMounted(() => {
     // Initialize the AudioContext (enables Web Audio API)
     audioContext.value = new AudioContext()
 
+    console.log('AudioContext created')
+    console.log('Initial state:', audioContext.value.state)
+    console.log('Destination:', audioContext.value.destination)
+    console.log('Sample rate:', audioContext.value.sampleRate)
+
     // Add keyboard event listeners
     window.addEventListener('keydown', handleKeyDown)
     window.addEventListener('keyup', handleKeyUp)
@@ -99,7 +104,13 @@ async function startNote(note: number) {
     // Configure
     oscillator.frequency.value = note
     oscillator.type = 'sine'
-    gainNode.gain.value = 0.3
+    gainNode.gain.value = 1.0
+
+    console.log('Oscillator configured:')
+    console.log('- Frequency:', note)
+    console.log('- Type:', oscillator.type)
+    console.log('- Gain:', gainNode.gain.value)
+    console.log('- Gain outputs:', gainNode.numberOfOutputs)
 
     // Start
     oscillator.start()
