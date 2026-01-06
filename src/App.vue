@@ -71,8 +71,13 @@ async function startNote(note: number) {
     // Resume AudioContext if suspended (required for mobile)
     if (audioContext.value.state === 'suspended') {
         console.log('Resuming suspended context...')
-        await audioContext.value.resume()
-        console.log('Context resumed, new state:', audioContext.value.state)
+        try {
+            await audioContext.value.resume()
+            console.log('Context resumed, new state:', audioContext.value.state)
+        } catch (error) {
+            console.error('Failed to resume context:', error)
+            return
+        }
     }
 
     // Exit if note is already playing
