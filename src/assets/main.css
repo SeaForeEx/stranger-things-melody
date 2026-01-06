@@ -137,7 +137,7 @@
         justify-content: center;
         align-items: center;
         gap: 1rem;
-        height: calc(100dvh - 50rem);
+        height: calc(100dvh - 40rem);
     }
     .key-button {
         width: 60px;
@@ -169,7 +169,7 @@
         justify-content: center;
         align-items: center;
         gap: 1rem;
-        height: calc(100dvh - 35rem);
+        height: calc(100dvh - 25rem);
     }
     .key-button {
         width: 50px;
