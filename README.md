@@ -409,9 +409,57 @@ Finally, I used the Map's `.delete()` method to remove the frequency key from `a
 
 ## More Design Decisions
 
+When I showed my kid the website, she immediately cringed. She hated the text being in the background and thought the image was too dark. She just confirmed what was in the back of my head while coding: I needed a redesign.
+
+<img src="screenshots/stm-desktop-ss-2.png" alt="STM Desktop View" width="75%" />
+
+I found an actual Stranger Things background, one that was brighter and looks really cool in both Desktop and Mobile views. The kids look up at the keys and I thought that was nice design work, focuses the user at the buttons. It was a plus that the image had a "Welcome to Hawkins" sign so I could change the header to "Stranger Things Melody" instead of having it covered by the keys.
+
+The buttons also didn't look good, The dark blue color and Stranger Things font were hard to read and didn't fit with the colors of the new background. I decided to simulate the look of computer keyboard keys and use that instead for a more intuitive User Experience. I still kept the notes below the keys for the users who want to know which notes they are playing.
+
+And the mobile view...
+
+<img src="screenshots/stm-mobile-ss-2.png" alt="STM Mobile View" width="50%" />
+
+...it's so satisfying to see this background image "Upside Down", it really looks cooler than the previous background image. 
+
+```css
+@media (max-width: 480px) {
+    .instructions {
+        position: fixed;
+        bottom: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        font-size: 1.25rem;
+        padding: 0.75rem 1rem;
+        margin-bottom: 0;
+        z-index: 100;
+    }
+}
+```
+
+I created a media query for the instructions div to show up on the bottom of the screen for the mobile version to avoid crowding up top and provide something to fill up that empty space.
+
+Now that I think about it, it would be cool to take the upside down version of the background and make it look darker, more like the Upside Down from the series.
+
+Good future idea, but my kiddo said "it looks better now", so that's good enough now for MVP.
+
 ---
 
 ## Future Enhancements
+
+- Create a Play button that would play a demo of the melody
+- Tweak the sine wave and create a cooler sound for the oscillator
+- Add reverb/delay effects for atmosphere
+- Add some more iconic melodies and turn it into a "Famous TV/Movie Melodies" app
+- Add visual feedback when keys are pressed (highlight/glow effect)
+- Display which key/note is currently playing
+- Add volume control slider
+- Add different instrument sounds (piano, synth, theremin for that Stranger Things vibe)
+- Implement MIDI keyboard support for users with music hardware
+- Add sheet music display that highlights notes as they're played
+- Create a practice mode that shows which keys to press in sequence
 
 ---
 
