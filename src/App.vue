@@ -1,14 +1,10 @@
 <script setup lang="ts">
-// Import Vue Composition API functions
 import { ref, onMounted, onUnmounted } from 'vue'
 
-// Reactive reference for Web Audio API context
+// ===== STATE =====
 const audioContext = ref<AudioContext | null>(null)
-
-// Map to track currently playing notes (frequency → [oscillator, gain])
 const activeOscillators = ref<Map<number, [OscillatorNode, GainNode]>>(new Map())
 
-// Lookup table: keyboard keys to note frequencies
 const keyToFrequency: Record<string, number> = {
     a: 261.63, // C4
     s: 329.63, // E4
@@ -17,32 +13,24 @@ const keyToFrequency: Record<string, number> = {
     g: 523.25, // C5
 }
 
-// Lifecycle hook: runs after component is mounted to the DOM
+// ===== LIFECYCLE =====
 onMounted(() => {
-    // Initialize the AudioContext (enables Web Audio API)
     audioContext.value = new AudioContext()
-
-    // Add keyboard event listeners
     window.addEventListener('keydown', handleKeyDown)
     window.addEventListener('keyup', handleKeyUp)
 })
 
-// Lifecycle hook: runs when component is destroyed/removed from DOM
 onUnmounted(() => {
-    // Remove keyboard event listeners on cleanup
     window.removeEventListener('keydown', handleKeyDown)
     window.removeEventListener('keyup', handleKeyUp)
 })
 
+// ===== EVENT HANDLERS =====
 function handleKeyDown(event: KeyboardEvent) {
     const key = event.key.toLowerCase()
     const frequency = keyToFrequency[key]
 
-    // Exit if key is not mapped or note is already playing
-    if (!frequency) return
-
-    // Prevent key repeat
-    if (event.repeat) return
+    if (!frequency || event.repeat) return
 
     startNote(frequency)
 }
@@ -51,19 +39,16 @@ function handleKeyUp(event: KeyboardEvent) {
     const key = event.key.toLowerCase()
     const frequency = keyToFrequency[key]
 
-    // Only stop if the released key is one of our musical keys
     if (!frequency) return
 
     stopNote(frequency)
 }
 
+// ===== AUDIO FUNCTIONS =====
 function startNote(note: number) {
-    // Exit if AudioContext doesn't exist
-    if (!audioContext.value) {
-        return
-    }
+    if (!audioContext.value) return
 
-    // Resume AudioContext if suspended (required for mobile)
+    // Resume AudioContext if suspended (mobile requirement)
     if (audioContext.value.state === 'suspended') {
         try {
             audioContext.value.resume()
@@ -73,58 +58,52 @@ function startNote(note: number) {
         }
     }
 
-    // Exit if note is already playing
-    if (activeOscillators.value.has(note)) {
-        return
-    }
+    if (activeOscillators.value.has(note)) return
 
-    // Create nodes
+    // Create and configure audio nodes
     const oscillator = audioContext.value.createOscillator()
     const gainNode = audioContext.value.createGain()
 
-    // Connect
     oscillator.connect(gainNode)
     gainNode.connect(audioContext.value.destination)
 
-    // Configure
     oscillator.frequency.value = note
     oscillator.type = 'sine'
-    gainNode.gain.value = 0.3
 
-    // Start
+    // Smooth attack envelope (fade in)
+    const now = audioContext.value.currentTime
+    gainNode.gain.setValueAtTime(0, now)
+    gainNode.gain.linearRampToValueAtTime(0.3, now + 0.005)
+
     oscillator.start()
 
-    // Store reference
     activeOscillators.value.set(note, [oscillator, gainNode])
 }
 
 function stopNote(note: number) {
-    // Safety check: exit if no note is currently playing
     if (!activeOscillators.value) return
 
-    // Get oscillator and gain node for this note
-    const oscillator = activeOscillators!.value.get(note)
+    const nodes = activeOscillators.value.get(note)
+    if (!nodes?.[0] || !nodes?.[1]) return
 
-    // Safety check: exit if note isn't playing or nodes are missing
-    if (!oscillator || !oscillator[0] || !oscillator[1]) return
-
-    // Get current audio timestamp for precise timing
     const now = audioContext.value!.currentTime
+    const [oscillator, gain] = nodes
 
-    // Fade out volume over 0.05 seconds to prevent clicking/popping
-    oscillator[1].gain.exponentialRampToValueAtTime(0.01, now + 0.05)
+    // Smooth release envelope (fade out)
+    gain.gain.cancelScheduledValues(now)
+    gain.gain.setValueAtTime(gain.gain.value, now)
+    gain.gain.linearRampToValueAtTime(0, now + 0.15)
 
-    // Stop the oscillator after fade out completes
-    oscillator[0].stop(now + 0.05)
+    oscillator.stop(now + 0.2)
 
-    // Remove this note from activeOscillators map
     activeOscillators.value.delete(note)
 }
 </script>
 
 <template>
     <div class="app-container">
-        <div class="outlined header">Stranger ThingS MelodY</div>
+        <div class="outlined header">StrangeR ThingS MelodY</div>
+
         <div class="instructions">
             <p>Press the keys A, S, D, F, G (or click the buttons) to play the melody!</p>
             <br />
@@ -136,6 +115,7 @@ function stopNote(note: number) {
                 <p class="silent-mode">TURN OFF SILENT MODE!</p>
             </div>
         </div>
+
         <div class="button-container">
             <div class="button-and-label">
                 <button
@@ -150,6 +130,7 @@ function stopNote(note: number) {
                 </button>
                 <span class="note-label">C4</span>
             </div>
+
             <div class="button-and-label">
                 <button
                     class="key-button"
@@ -163,6 +144,7 @@ function stopNote(note: number) {
                 </button>
                 <span class="note-label">E4</span>
             </div>
+
             <div class="button-and-label">
                 <button
                     class="key-button"
@@ -176,6 +158,7 @@ function stopNote(note: number) {
                 </button>
                 <span class="note-label">G4</span>
             </div>
+
             <div class="button-and-label">
                 <button
                     class="key-button"
@@ -189,6 +172,7 @@ function stopNote(note: number) {
                 </button>
                 <span class="note-label">B4</span>
             </div>
+
             <div class="button-and-label">
                 <button
                     class="key-button"
