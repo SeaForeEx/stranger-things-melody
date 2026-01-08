@@ -473,7 +473,7 @@ This was a great reminder that understanding the underlying math and audio engin
 
 Below are graphs of linear versus exponential functions showing why linear volume reaches true zero while exponential functions asymptotically approach but never reach zero.
 
-<graph image here>
+<img src="screenshots/graph-comparison.png" alt="Linear and Exponential functions" width="75%" />
 
 ---
 
@@ -562,8 +562,6 @@ The conditional in the `startNote()` function checks if the `AudioContext` is su
 ```
 
 I also added touch event handlers to the key buttons for better mobile support. The `.prevent` modifier keeps the mouse events from firing if a touch event is triggered, preventing duplicate sound playback.
-
-<img src="screenshots/graph-comparison.png" alt="Linear and Exponential functions" width="75%" />
 
 ---
 
