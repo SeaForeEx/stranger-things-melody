@@ -563,6 +563,8 @@ The conditional in the `startNote()` function checks if the `AudioContext` is su
 
 I also added touch event handlers to the key buttons for better mobile support. The `.prevent` modifier keeps the mouse events from firing if a touch event is triggered, preventing duplicate sound playback.
 
+<img src="screenshots/graph-comparison.png" alt="Linear and Exponential functions" width="75%" />
+
 ---
 
 ## Future Enhancements
