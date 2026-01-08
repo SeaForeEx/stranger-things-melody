@@ -25,10 +25,11 @@ Recreate the iconic Stranger Things theme melody note-by-note with this interact
 7. [Keyboard Functionality](#keyboard-functionality)
 8. [Sustain Notes](#sustain-notes)
 9. [Rolling Keys](#rolling-keys)
-10. [More Design Decisions](#more-design-decisions)
-11. [Mobile Compatibility Challenge](#mobile-compatibility-challenge)
-12. [Future Enhancements](#future-enhancements)
-13. [Contact](#contact)
+10. [Eliminating Audio Clicks](#eliminating-audio-clicks)
+11. [More Design Decisions](#more-design-decisions)
+12. [Mobile Compatibility Challenge](#mobile-compatibility-challenge)
+13. [Future Enhancements](#future-enhancements)
+14. [Contact](#contact)
 
 ## Learning Goals
 
@@ -408,6 +409,71 @@ The safety checks needed adjustment to work with the Map structure. The second c
 When applying the fade out and stopping playback, I had to be careful with the array indices. `oscillator[1].gain` applies the volume fade to the Gain Node, while `oscillator[0].stop()` ends the Oscillator's playback. Mixing these up wouldn't work!
 
 Finally, I used the Map's `.delete()` method to remove the frequency key from `activeOscillators`, cleaning up the stopped note.
+
+---
+
+## Eliminating Audio Clicks
+
+After deploying the app, I noticed audible clicking/popping sounds when notes started and stopped, especially on mobile browsers.
+
+### Old Code
+
+```typescript
+function startNote(note: number) {
+    // ...
+
+    gainNode.gain.value = 0.3
+    oscillator.start()
+
+    // ...
+}
+
+function stopNote(note: number) {
+    // ...
+
+    oscillator[1].gain.exponentialRampToValueAtTime(0.01, now + 0.05)
+    oscillator[0].stop(now + 0.05)
+
+    // ...
+}
+```
+
+The `startNote()` function was setting the volume to 30% instantly, causing an audible click when the note began. The `stopNote()` function was fading the volume exponentially to near-zero over 50 milliseconds, but this was too short and didn't reach true silence (exponential ramps can't reach zero mathematically). These abrupt volume changes created clicking sounds, especially noticeable on mobile browsers.
+
+### New Code
+
+```typescript
+function startNote(note: number) {
+    // ...
+    const now = audioContext.value.currentTime
+    gainNode.gain.setValueAtTime(0, now)  // Start at 0% volume
+    gainNode.gain.linearRampToValueAtTime(0.3, now + 0.005)  // Ramp to 30% over 5ms
+    oscillator.start()
+    // ...
+}
+function stopNote(note: number) {
+    // ...
+    gain.gain.cancelScheduledValues(now)  // Clear pending automations
+    gain.gain.setValueAtTime(gain.gain.value, now)  // Lock current volume (30%)
+    gain.gain.linearRampToValueAtTime(0, now + 0.15)  // Ramp to 0% over 150ms
+    oscillator.stop(now + 0.2)  // Stop after fade completes
+    // ...
+}
+```
+
+The new `startNote()` function uses the audio clock as a timing reference to smoothly fade the volume from 0% to 30% over 5 milliseconds. This eliminates the initial click caused by the instant volume jump.
+
+The new `stopNote()` function clears any pending volume automations (preventing glitches if multiple keys are pressed rapidly), locks in the current volume (30%), then smoothly fades to silence over 150 milliseconds. This creates a clean release without clicks.
+
+Together, these changes create an attack/release envelope that produces smooth, click-free playback.
+
+I switched from `exponentialRampToValueAtTime()` to `linearRampToValueAtTime()` because exponential curves can never reach true zero mathematically. As I learned from teaching exponential functions to my Algebra 2 students, exponential decay approaches zero but never actually reaches it. Even at 0.01 (1% volume), the sound is still audible, causing a click when the oscillator stops. Linear functions, however, can reach exactly zero, ensuring complete silence before the oscillator stops.
+
+This was a great reminder that understanding the underlying math and audio engineering principles is just as important as knowing the API syntax.
+
+Below are graphs of linear versus exponential functions showing why linear volume reaches true zero while exponential functions asymptotically approach but never reach zero.
+
+<graph image here>
 
 ---
 
