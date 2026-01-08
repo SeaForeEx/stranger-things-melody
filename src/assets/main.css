@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
+/* ===== RESET ===== */
 * {
     margin: 0;
     padding: 0;
@@ -7,12 +8,31 @@
     font-family: 'Roboto', sans-serif;
 }
 
+/* ===== FONTS ===== */
+@font-face {
+    font-family: 'Stranger Things';
+    src: url('/fonts/stranger-things.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Stranger Things Outlined';
+    src: url('/fonts/stranger-things-outlined.ttf') format('truetype');
+}
+
+.solid {
+    font-family: 'Stranger Things', sans-serif;
+}
+
+.outlined {
+    font-family: 'Stranger Things Outlined', sans-serif;
+}
+
+/* ===== LAYOUT ===== */
 .app-container {
     background-image: url('/stm-desktop-2.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-attachment: scroll;
     height: 100vh;
     height: 100dvh;
     overflow: hidden;
@@ -23,16 +43,17 @@
     text-align: center;
     font-size: 5rem;
     color: #ef6060;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
     text-shadow:
         0 0 5px #2b0101,
         0 0 10px #920d0d,
         0 0 20px #ec0b0b,
         0 0 40px #ff0a0a,
         0 0 60px #ff0000;
-    background-color: rgba(0, 0, 0, 0.8);
-    border-radius: 10px;
 }
 
+/* ===== INSTRUCTIONS ===== */
 .instructions {
     text-align: center;
     font-size: 1.5rem;
@@ -48,7 +69,6 @@
 
 .silent-mode-container {
     display: flex;
-    flex-direction: row;
     justify-content: center;
     align-items: center;
 }
@@ -60,6 +80,7 @@
         0 0 10px rgba(255, 215, 0, 0.6);
 }
 
+/* ===== BUTTONS ===== */
 .button-container {
     display: flex;
     justify-content: center;
@@ -72,15 +93,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     gap: 0.5rem;
 }
 
 .key-button {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     width: 80px;
     height: 80px;
     background: linear-gradient(180deg, #f5f5f5 0%, #e0e0e0 100%);
@@ -103,12 +119,9 @@
 }
 
 .note-label {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 80px;
     margin-top: 0.5rem;
+    text-align: center;
+    width: 80px;
     font-size: 2rem;
     font-weight: bold;
     color: #ef6060;
@@ -120,47 +133,30 @@
         0 0 10px #920d0d;
 }
 
-@font-face {
-    font-family: 'Stranger Things';
-    src: url('/fonts/stranger-things.ttf') format('truetype');
-}
-
-@font-face {
-    font-family: 'Stranger Things Outlined';
-    src: url('/fonts/stranger-things-outlined.ttf') format('truetype');
-}
-
-.solid {
-    font-family: 'Stranger Things', sans-serif;
-}
-
-.outlined {
-    font-family: 'Stranger Things Outlined', sans-serif;
-}
-
-/* Mobile optimization */
+/* ===== MOBILE ===== */
 @media (max-width: 480px) {
     .app-container {
         background-image: url('/stm-mobile-2.jpg');
     }
+
     .header {
         font-size: 3rem;
     }
+
     .button-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 1rem;
         height: calc(100dvh - 40rem);
     }
+
     .key-button {
         width: 60px;
         height: 60px;
     }
+
     .note-label {
         width: 60px;
         font-size: 1.5rem;
     }
+
     .instructions {
         position: fixed;
         bottom: 1rem;
@@ -172,11 +168,9 @@
         margin-bottom: 0;
         z-index: 100;
     }
+
     .silent-mode-container {
-        display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
     }
 }
 
@@ -184,30 +178,22 @@
     .header {
         font-size: 2rem;
     }
+
     .button-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 1rem;
         height: calc(100dvh - 25rem);
     }
+
     .key-button {
         width: 50px;
         height: 50px;
     }
+
     .note-label {
         width: 50px;
         font-size: 1rem;
     }
+
     .instructions {
-        position: fixed;
-        bottom: 1rem;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 90%;
         font-size: 1rem;
-        padding: 0.75rem 1rem;
-        margin-bottom: 0;
-        z-index: 100;
     }
 }
