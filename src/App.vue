@@ -92,13 +92,14 @@ function stopNote(note: number) {
     // Smooth release envelope (fade out)
     gain.gain.cancelScheduledValues(now)
     gain.gain.setValueAtTime(gain.gain.value, now)
-    gain.gain.linearRampToValueAtTime(0, now + 0.15)
+    gain.gain.exponentialRampToValueAtTime(0.0000001, now + 0.15)
 
     oscillator.stop(now + 0.2)
 
     activeOscillators.value.delete(note)
 }
 </script>
+f
 
 <template>
     <div class="app-container">
