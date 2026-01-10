@@ -473,7 +473,37 @@ This was a great reminder that understanding the underlying math and audio engin
 
 Below are graphs of linear versus exponential functions showing why linear volume reaches true zero while exponential functions asymptotically approach but never reach zero.
 
-<img src="screenshots/graph-comparison.png" alt="Linear and Exponential functions" width="75%" />
+<img src="screenshots/graph-comparison.png" alt="Linear and Exponential functions" width="50%" />
+
+<br />
+
+> NOTE: The more I played my app, the more the sound felt "off". I did some research and discovered that the human ear naturally perceives sound in a logarithmic way, making exponential curves the better choice for natural-sounding audio. I went back to using the exponentialRampToValueAtTime() method but changed the final release value from 0.01 to 0.0000001, and kept the extended fade time from the attempted fix.
+
+```typescript
+function stopNote(note: number) {
+	// ...
+    
+    // OLD CODE
+    // Fade is too short for sustained notes, can cause clicks
+    // 0.01 is still audible, not silent enough
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05)
+    
+    // ATTEMPTED FIX
+    // Can fade all the way to 0 (complete silence)
+    // Extended fade from 50ms (0.05) to 150ms (0.15) to prevent clicks on sustained notes
+
+    // BUT: Constant fade rate sounds less natural than exponential
+    gain.gain.linearRampToValueAtTime(0, now + 0.15)
+    
+    // FINAL CODE
+   	// Returns sound to the more natural exponential curve
+    // Kept extended fade from attempted fix
+    // 0.0000001 isn't true 0 but low enough to be inaudible and avoid clicks
+    gain.gain.exponentialRampToValueAtTime(0.0000001, now + 0.15)
+
+	// ...
+}
+```
 
 ---
 
