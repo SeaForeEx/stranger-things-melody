@@ -46,19 +46,32 @@ function handleKeyUp(event: KeyboardEvent) {
 
 // ===== AUDIO FUNCTIONS =====
 function startNote(note: number) {
-    if (!audioContext.value) return
+    console.log('startNote called, context state:', audioContext.value?.state)
+
+    if (!audioContext.value) {
+        console.log('no audioContext')
+        return
+    }
 
     // Resume AudioContext if suspended (mobile requirement)
     if (audioContext.value.state === 'suspended') {
+        console.log('Attempting to resume...')
+
         try {
             audioContext.value.resume()
+            console.log('Resumed! New state:', audioContext.value.state)
         } catch (error) {
             console.error('Failed to resume context:', error)
             return
         }
     }
 
-    if (activeOscillators.value.has(note)) return
+    if (activeOscillators.value.has(note)) {
+        console.log('Note already playing')
+        return
+    }
+
+    console.log('Creating oscillator for note:', note)
 
     // Create and configure audio nodes
     const oscillator = audioContext.value.createOscillator()
@@ -75,9 +88,11 @@ function startNote(note: number) {
     gainNode.gain.setValueAtTime(0, now)
     gainNode.gain.linearRampToValueAtTime(0.3, now + 0.005)
 
+    console.log('Starting oscillator')
     oscillator.start()
 
     activeOscillators.value.set(note, [oscillator, gainNode])
+    console.log('Oscillator added to active map')
 }
 
 function stopNote(note: number) {
