@@ -3,7 +3,6 @@ import { ref, onMounted, onUnmounted } from 'vue'
 
 // ===== STATE =====
 const audioContext = ref<AudioContext | null>(null)
-const isResuming = ref(false)
 const activeOscillators = ref<Map<number, [OscillatorNode, GainNode]>>(new Map())
 
 const keyToFrequency: Record<string, number> = {
@@ -46,50 +45,17 @@ function handleKeyUp(event: KeyboardEvent) {
 }
 
 // ===== AUDIO FUNCTIONS =====
-async function startNote(note: number) {
-    console.log('startNote called, context state:', audioContext.value?.state)
+function startNote(note: number) {
+    if (!audioContext.value) return
 
-    if (!audioContext.value) {
-        console.log('no audioContext')
-        return
-    }
-
-    // Resume AudioContext if suspended (mobile requirement)
+    // Resume if suspended - fire and forget
     if (audioContext.value.state === 'suspended') {
-        // If already resuming, wait and try again
-        if (isResuming.value) {
-            console.log('Already resuming, waiting...')
-            return
-        }
-
-        console.log('Attempting to resume...')
-        isResuming.value = true
-
-        try {
-            await audioContext.value.resume()
-            console.log('Resumed! New state:', audioContext.value.state)
-        } catch (error) {
-            console.error('Failed to resume context:', error)
-            return
-        } finally {
-            isResuming.value = false
-        }
+        audioContext.value.resume()
     }
 
-    // IMPORTANT: Check state again after await - make sure we're actually running
-    if (audioContext.value.state !== 'running') {
-        console.log('Context still not running, aborting')
-        return
-    }
+    if (activeOscillators.value.has(note)) return
 
-    if (activeOscillators.value.has(note)) {
-        console.log('Note already playing')
-        return
-    }
-
-    console.log('Creating oscillator for note:', note)
-
-    // Create and configure audio nodes
+    // Create and play the note
     const oscillator = audioContext.value.createOscillator()
     const gainNode = audioContext.value.createGain()
 
@@ -99,16 +65,13 @@ async function startNote(note: number) {
     oscillator.frequency.value = note
     oscillator.type = 'sine'
 
-    // Smooth attack envelope (fade in)
     const now = audioContext.value.currentTime
     gainNode.gain.setValueAtTime(0, now)
     gainNode.gain.linearRampToValueAtTime(0.3, now + 0.005)
 
-    console.log('Starting oscillator')
     oscillator.start()
 
     activeOscillators.value.set(note, [oscillator, gainNode])
-    console.log('Oscillator added to active map')
 }
 
 function stopNote(note: number) {
