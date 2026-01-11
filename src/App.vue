@@ -3,6 +3,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 
 // ===== STATE =====
 const audioContext = ref<AudioContext | null>(null)
+const isResuming = ref(false)
 const activeOscillators = ref<Map<number, [OscillatorNode, GainNode]>>(new Map())
 
 const keyToFrequency: Record<string, number> = {
@@ -55,7 +56,14 @@ async function startNote(note: number) {
 
     // Resume AudioContext if suspended (mobile requirement)
     if (audioContext.value.state === 'suspended') {
+        // If already resuming, wait and try again
+        if (isResuming.value) {
+            console.log('Already resuming, waiting...')
+            return
+        }
+
         console.log('Attempting to resume...')
+        isResuming.value = true
 
         try {
             await audioContext.value.resume()
@@ -63,6 +71,8 @@ async function startNote(note: number) {
         } catch (error) {
             console.error('Failed to resume context:', error)
             return
+        } finally {
+            isResuming.value = false
         }
     }
 
