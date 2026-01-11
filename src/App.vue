@@ -45,7 +45,7 @@ function handleKeyUp(event: KeyboardEvent) {
 }
 
 // ===== AUDIO FUNCTIONS =====
-function startNote(note: number) {
+async function startNote(note: number) {
     console.log('startNote called, context state:', audioContext.value?.state)
 
     if (!audioContext.value) {
@@ -58,7 +58,7 @@ function startNote(note: number) {
         console.log('Attempting to resume...')
 
         try {
-            audioContext.value.resume()
+            await audioContext.value.resume()
             console.log('Resumed! New state:', audioContext.value.state)
         } catch (error) {
             console.error('Failed to resume context:', error)
