@@ -66,6 +66,12 @@ async function startNote(note: number) {
         }
     }
 
+    // IMPORTANT: Check state again after await - make sure we're actually running
+    if (audioContext.value.state !== 'running') {
+        console.log('Context still not running, aborting')
+        return
+    }
+
     if (activeOscillators.value.has(note)) {
         console.log('Note already playing')
         return
